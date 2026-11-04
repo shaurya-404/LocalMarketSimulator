@@ -18,7 +18,7 @@ class MarketSimulatorCLI:
             print("\n" + "=" * 60)
             print("       REAL-TIME MARKET SIMULATOR (LOCAL)      ")
             print("=" * 60)
-            print(f"Current Cash Balance: ${self.db.get_balance():,.2f}")
+            print(f"Current Cash Balance: ₹{self.db.get_balance():,.2f}")
             print("-" * 60)
             print("1. View Portfolio Dashboard & Detailed P&L 📊")
             print("2. Buy Asset")
@@ -65,8 +65,8 @@ class MarketSimulatorCLI:
             print("\n" + "=" * 60)
             print("         PORTFOLIO ANALYTICS DASHBOARD (TERMINAL)         ")
             print("=" * 60)
-            print(f" Cash Balance:            ${cash:,.2f}")
-            print(f" Total Net Worth:         ${cash:,.2f}")
+            print(f" Cash Balance:            ₹{cash:,.2f}")
+            print(f" Total Net Worth:         ₹{cash:,.2f}")
             print(" Status: Portfolio is currently empty. Buy assets to track analytics.")
             print("=" * 60)
             return
@@ -110,13 +110,13 @@ class MarketSimulatorCLI:
         print("\n" + "═" * 70)
         print("          PORTFOLIO ANALYTICS & INSIGHTS (TERMINAL)          ")
         print("═" * 70)
-        print(f" Total Net Worth:         ${net_worth:,.2f}")
-        print(f" Cash Balance:            ${cash:,.2f} ({(cash/net_worth*100):.1f}% of net worth)")
-        print(f" Current Holding Value:   ${total_current_holding_val:,.2f}")
-        print(f" Total Capital Invested:  ${total_invested:,.2f}")
+        print(f" Total Net Worth:         ₹{net_worth:,.2f}")
+        print(f" Cash Balance:            ₹{cash:,.2f} ({(cash/net_worth*100):.1f}% of net worth)")
+        print(f" Current Holding Value:   ₹{total_current_holding_val:,.2f}")
+        print(f" Total Capital Invested:  ₹{total_invested:,.2f}")
         
         pnl_symbol = "▲ +" if total_pnl >= 0 else "▼ -"
-        print(f" Total Unrealized P&L:    {pnl_symbol}${abs(total_pnl):,.2f} ({total_pnl_pct:+.2f}%)")
+        print(f" Total Unrealized P&L:    {pnl_symbol}₹{abs(total_pnl):,.2f} ({total_pnl_pct:+.2f}%)")
         print("─" * 70)
 
         print("\n--- ASSET CLASS BREAKDOWN ---")
@@ -124,7 +124,7 @@ class MarketSimulatorCLI:
         for a_type, val in asset_class_totals.items():
             pct = (val / total_current_holding_val * 100) if total_current_holding_val > 0 else 0
             bar = self.draw_bar(pct)
-            allocation_rows.append([a_type, f"${val:,.2f}", f"{pct:5.1f}%", f"[{bar}]"])
+            allocation_rows.append([a_type, f"₹{val:,.2f}", f"{pct:5.1f}%", f"[{bar}]"])
             
         print(tabulate(allocation_rows, headers=["Asset Class", "Current Value", "Share (%)", "Distribution"], tablefmt="simple"))
 
@@ -132,16 +132,16 @@ class MarketSimulatorCLI:
         holdings_rows = []
         for item in processed_holdings:
             port_weight = (item["current_val"] / net_worth * 100)
-            pnl_indicator = f"+${item['pnl']:,.2f} ({item['pnl_pct']:+.1f}%)" if item['pnl'] >= 0 else f"-${abs(item['pnl']):,.2f} ({item['pnl_pct']:+.1f}%)"
+            pnl_indicator = f"+₹{item['pnl']:,.2f} ({item['pnl_pct']:+.1f}%)" if item['pnl'] >= 0 else f"-₹{abs(item['pnl']):,.2f} ({item['pnl_pct']:+.1f}%)"
             
             holdings_rows.append([
                 item["symbol"],
                 item["asset_type"],
                 f"{item['qty']:,.4f}".rstrip('0').rstrip('.'),
-                f"${item['avg_price']:,.2f}",
-                f"${item['invested_val']:,.2f}",
-                f"${item['live_price']:,.2f}",
-                f"${item['current_val']:,.2f}",
+                f"₹{item['avg_price']:,.2f}",
+                f"₹{item['invested_val']:,.2f}",
+                f"₹{item['live_price']:,.2f}",
+                f"₹{item['current_val']:,.2f}",
                 f"{port_weight:.1f}%",
                 pnl_indicator
             ])
@@ -156,7 +156,7 @@ class MarketSimulatorCLI:
         print("\n--- KEY HIGHLIGHTS ---")
         print(f" 🏆 Top Performing Asset:   {top_gainer['symbol']} ({top_gainer['pnl_pct']:+.2f}%)")
         print(f" ⚠️ Worst Performing Asset: {worst_gainer['symbol']} ({worst_gainer['pnl_pct']:+.2f}%)")
-        print(f" 📦 Largest Asset Holding:  {largest_pos['symbol']} (${largest_pos['current_val']:,.2f})")
+        print(f" 📦 Largest Asset Holding:  {largest_pos['symbol']} (₹{largest_pos['current_val']:,.2f})")
         print("═" * 70 + "\n")
 
     def search_company(self):
@@ -222,15 +222,15 @@ class MarketSimulatorCLI:
 
         if total_cost > available_cash:
             print(f"\n[!] Trade Rejected: Insufficient Cash Balance.")
-            print(f"Required: ${total_cost:,.2f} | Available: ${available_cash:,.2f}")
+            print(f"Required: ₹{total_cost:,.2f} | Available: ₹{available_cash:,.2f}")
             return
 
         self.db.update_balance(-total_cost)
         self.db.update_position(symbol, asset_type, qty, price)
         self.db.log_trade(symbol, asset_type, "BUY", qty, price, total_cost)
         
-        print(f"\n[✔] SUCCESS: Bought {qty} units of {symbol} at ${price:,.2f} per unit.")
-        print(f"Total Deducted: ${total_cost:,.2f} | Remaining Cash: ${self.db.get_balance():,.2f}")
+        print(f"\n[✔] SUCCESS: Bought {qty} units of {symbol} at ₹{price:,.2f} per unit.")
+        print(f"Total Deducted: ₹{total_cost:,.2f} | Remaining Cash: ₹{self.db.get_balance():,.2f}")
 
     def execute_sell(self):
         print("\n--- SELL ASSET ---")
@@ -241,7 +241,7 @@ class MarketSimulatorCLI:
             return
 
         _, asset_type, available_qty, avg_price = position
-        print(f"Current Position: {available_qty} {symbol} (Avg Cost: ${avg_price:,.2f})")
+        print(f"Current Position: {available_qty} {symbol} (Avg Cost: ₹{avg_price:,.2f})")
         
         try:
             qty = float(input("Enter Quantity to Sell: ").strip())
@@ -261,15 +261,15 @@ class MarketSimulatorCLI:
         self.db.log_trade(symbol, asset_type, "SELL", qty, price, total_proceeds)
 
         realized_pnl = (price - avg_price) * qty
-        pnl_str = f"+${realized_pnl:,.2f}" if realized_pnl >= 0 else f"-${abs(realized_pnl):,.2f}"
-        print(f"\n[✔] SUCCESS: Sold {qty} units of {symbol} at ${price:,.2f} per unit.")
-        print(f"Proceeds Added: ${total_proceeds:,.2f} | Realized P&L: {pnl_str}")
+        pnl_str = f"+₹{realized_pnl:,.2f}" if realized_pnl >= 0 else f"-₹{abs(realized_pnl):,.2f}"
+        print(f"\n[✔] SUCCESS: Sold {qty} units of {symbol} at ₹{price:,.2f} per unit.")
+        print(f"Proceeds Added: ₹{total_proceeds:,.2f} | Realized P&L: {pnl_str}")
 
     def lookup_quote(self):
         symbol = input("\nEnter Ticker Symbol for Live Quote: ").strip().upper()
         price = MarketDataEngine.get_live_price(symbol)
         if price:
-            print(f"\n[+] Real-time Market Quote for {symbol}: ${price:,.4f}")
+            print(f"\n[+] Real-time Market Quote for {symbol}: ₹{price:,.4f}")
         else:
             print(f"\n[!] Failed to retrieve quote for {symbol}.")
 
@@ -281,7 +281,7 @@ class MarketSimulatorCLI:
             print(f"[!] Unable to retrieve current spot price for {symbol}.")
             return
             
-        print(f"Current Spot Price for {symbol}: ${spot_price:,.2f}")
+        print(f"Current Spot Price for {symbol}: ₹{spot_price:,.2f}")
         try:
             strike = float(input("Enter Strike Price: ").strip())
             days = float(input("Enter Days to Expiration (e.g. 30): ").strip())
@@ -301,8 +301,8 @@ class MarketSimulatorCLI:
         
         contract_cost = premium_per_share * 100 * qty
         opt_symbol = f"{symbol}_{days}D_{strike}{opt_type[0]}"
-        print(f"\nCalculated Option Premium: ${premium_per_share:.2f} / share")
-        print(f"Total Option Contract Premium ({qty} contracts): ${contract_cost:,.2f}")
+        print(f"\nCalculated Option Premium: ₹{premium_per_share:.2f} / share")
+        print(f"Total Option Contract Premium ({qty} contracts): ₹{contract_cost:,.2f}")
         
         confirm = input("Confirm Purchase? (y/n): ").strip().lower()
         if confirm == 'y':
@@ -314,7 +314,7 @@ class MarketSimulatorCLI:
             self.db.update_balance(-contract_cost)
             self.db.update_position(opt_symbol, "OPTION", qty, premium_per_share * 100)
             self.db.log_trade(opt_symbol, "OPTION", "BUY", qty, premium_per_share * 100, contract_cost)
-            print(f"\n[✔] Bought {qty} {opt_symbol} contracts for ${contract_cost:,.2f}")
+            print(f"\n[✔] Bought {qty} {opt_symbol} contracts for ₹{contract_cost:,.2f}")
 
     def show_trade_log(self):
         trades = self.db.get_trade_history()
@@ -326,7 +326,7 @@ class MarketSimulatorCLI:
         for sym, a_type, t_type, qty, price, total, ts in trades:
             table_data.append([
                 ts[:19].replace("T", " "), sym, a_type, t_type,
-                f"{qty:,.4f}".rstrip('0').rstrip('.'), f"${price:,.2f}", f"${total:,.2f}"
+                f"{qty:,.4f}".rstrip('0').rstrip('.'), f"₹{price:,.2f}", f"₹{total:,.2f}"
             ])
             
         headers = ["Timestamp", "Symbol", "Type", "Side", "Qty", "Execution Price", "Total Amount"]

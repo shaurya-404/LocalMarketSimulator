@@ -1,73 +1,71 @@
 # 🍉 Watermelon Real-Time Market Simulator
 
-A lightweight, persistent, real-time paper trading market simulator built in Python. Designed for both global and domestic trading, it allows you to trade **Stocks, ETFs, Cryptocurrencies, Forex, Commodities, Mutual Funds, and Options** with zero financial risk using live market data, local database storage, and a dual terminal/web interface.
+> **A persistent, zero-risk, multi-asset paper trading environment built for global and Indian markets.**  
+> Trade Stocks, ETFs, Crypto, Forex, Commodities, Mutual Funds, and Options in real-time with automatic offline state saving, dynamic P&L updates on re-launch, and a custom localhost dashboard formatted in **Indian Rupees (₹)**.
 
 ---
 
 ## 📑 Table of Contents
 
-- [Core Principles & How It Works](#-core-principles--how-it-works)
-  - [1. Persistent State Saving](#1-persistent-state-saving)
-  - [2. Dynamic Live Data Refreshing](#2-dynamic-live-data-refreshing)
-- [✨ Features](#-features)
-- [📁 Project Structure](#-project-structure)
-- [⚙️ System Requirements](#️-system-requirements)
-- [🚀 Setup & Installation Guide](#-setup--installation-guide)
-  - [Step 1: Clone or Extract Files](#step-1-clone-or-extract-files)
-  - [Step 2: Create a Virtual Environment](#step-2-create-a-virtual-environment)
-  - [Step 3: Install Dependencies](#step-3-install-dependencies)
-- [🎮 Running the Simulator](#-running-the-simulator)
-  - [Method 1: One-Click Auto-Launcher (Recommended)](#method-1-one-click-auto-launcher-recommended)
-  - [Method 2: Interactive Terminal CLI](#method-2-interactive-terminal-cli)
-  - [Method 3: Watermelon Web Dashboard (Localhost)](#method-3-watermelon-web-dashboard-localhost)
-- [📊 Supported Asset Classes & Ticker Format](#-supported-asset-classes--ticker-format)
-- [🛠️ Troubleshooting & Frequently Asked Questions](#️-troubleshooting--frequently-asked-questions)
+- [Overview & Core Concept](#-overview--core-concept)
+- [✨ Key USPs (Unique Selling Points)](#-key-usps-unique-selling-points)
+  - [1. Offline State Persistence & Real-Time Sync on Restart](#1-offline-state-persistence--real-time-sync-on-restart)
+  - [2. Watermelon Analytics Localhost Dashboard](#2-watermelon-analytics-localhost-dashboard)
+  - [3. Real-Time Multi-Asset & Indian Market Support](#3-real-time-multi-asset--indian-market-support)
+  - [4. Zero-Setup One-Click Launchers](#4-zero-setup-one-click-launchers)
+- [📁 Project Architecture](#-project-architecture)
+- [🚀 User Guide: How to Launch & Run](#-user-guide-how-to-launch--run)
+  - [Method 1: Primary Python Run (`python run.py`)](#method-1-primary-python-run-python-runpy)
+  - [Method 2: One-Click OS Launchers (Auto-Installs Python if Missing)](#method-2-one-click-os-launchers-auto-installs-python-if-missing)
+  - [Method 3: Terminal CLI Direct (`main.py`)](#method-3-terminal-cli-direct-mainpy)
+  - [Method 4: Web Dashboard Server Direct (`server.py`)](#method-4-web-dashboard-server-direct-serverpy)
+- [🎮 Menu & Features User Guide](#-menu--features-user-guide)
+- [📊 Supported Asset Classes & Ticker Formats](#-supported-asset-classes--ticker-formats)
+- [🛠️ Troubleshooting & FAQ](#️-troubleshooting--faq)
 - [🛡️ License](#️-license)
 
 ---
 
-## 💡 Core Principles & How It Works
+## 💡 Overview & Core Concept
 
-### 1. Persistent State Saving
-When you launch the simulator for the first time, an account is created with a starting balance of **$100,000.00**. 
+The **Watermelon Market Simulator** is designed for traders, students, and financial enthusiasts who want to test market strategies without risking real capital.
 
-Every trade (Buy/Sell) instantly writes changes to a local SQLite database (`market_sim.db`):
-- **Cash Balances:** Automatically updated upon buying or selling.
-- **Holdings Ledger:** Keeps track of physical units owned and their dollar-weighted average entry cost (`avg_buy_price`).
-- **Trade History:** Logs timestamped audit records of execution price, quantity, and total trade value.
-
-**When you close the program or shut down your PC, no data is lost.** All state remains intact inside `market_sim.db`.
-
-### 2. Dynamic Live Data Refreshing
-When you open the simulator on a future run or view your portfolio:
-1. **Load Local State:** The program retrieves your saved cash balance and static holdings from `market_sim.db`.
-2. **Fetch Real-Time Quotes:** The data engine queries Yahoo Finance (`yfinance`) for live market prices.
-3. **Compare & Compute:** It evaluates your static cost basis against live market prices to compute **real-time Unrealized P&L ($ and %)**, **Net Portfolio Value**, and **Asset Allocation percentages**.
+Instead of relying on fake or static mock data, this simulator connects directly to live global financial feeds via `yfinance`. You start with a virtual cash balance of **₹100,000.00**, allowing you to execute realistic market orders, track performance, analyze asset allocations, and build long-term portfolio strategies.
 
 ---
 
-## ✨ Features
+## ✨ Key USPs (Unique Selling Points)
 
-- **Multi-Asset Real-Time Streaming:** Live market data for US Equities, Indian Stock Exchanges (NSE & BSE), Crypto, Commodities, Forex, and Mutual Funds.
-- **Company Name Ticker Search:** Integrated search API that translates company names (e.g., "Apple", "Tata", "Reliance") into valid market tickers.
-- **Simulated Options Engine:** Black-Scholes valuation algorithm for dynamic Call/Put contract options pricing based on underlying spot prices, volatility, strike price, and time to expiration.
-- **Dual Dashboard Systems:**
-  - **Terminal Analytics Dashboard:** Detailed CLI tables with visual distribution progress bars, asset weights, top gainers, and worst performers.
-  - **Watermelon Localhost Web Dashboard:** Single-click modern web interface powered by FastAPI + Watermelon UI (Tailwind CSS & Chart.js) running locally at `http://127.0.0.1:8000`.
-- **Local SQLite Storage:** Zero setup required for databases. Saves all data locally without third-party server dependencies.
+### 1. Offline State Persistence & Real-Time Sync on Restart
+* **Offline Local Storage:** Every single transaction, cash balance change, and asset position is automatically stored locally in a SQLite database (`market_sim.db`). You don't need external database servers or cloud sign-ups. Closing your terminal or turning off your PC **never loses your progress**.
+* **Smart Compare & Update on Re-launch:** When you close the program today and open it next week, the simulator reads your saved physical holdings (`market_sim.db`), polls the latest live market prices, and instantly **re-calculates your current portfolio net worth and unrealized P&L (₹ and %)** against your original entry cost.
+
+### 2. Watermelon Analytics Localhost Dashboard
+* **Modern Web Interface:** Built using FastAPI, Chart.js, and Tailwind CSS, the dashboard offers an intuitive, watermelon-themed UI available right in your browser at `http://127.0.0.1:8000`.
+* **Visual Insights:** Live metric cards for Net Worth, Cash Balance, and Portfolio Value, plus dynamic asset allocation donut charts and full holding tables formatted in **Indian Rupees (₹)**.
+
+### 3. Real-Time Multi-Asset & Indian Market Support
+* Native integration with the **National Stock Exchange (NSE)** and **Bombay Stock Exchange (BSE)** using `.NS` and `.BO` suffixes.
+* Full cross-asset coverage including **US Equities, ETFs, Cryptocurrencies, Forex pairs, Commodities (Gold/Crude Oil), Mutual Funds, and Options** priced using the **Black-Scholes valuation model**.
+* Integrated **Company Name Ticker Search** so you can find stock tickers by searching company keywords (e.g. "Reliance", "Tata", "Tesla").
+
+### 4. Zero-Setup One-Click Launchers
+* Includes `launch_windows.bat` and `launch_mac.command` OS wrappers. If a user doesn't have Python or required packages installed, the launcher **automatically downloads Python, configures a virtual environment, installs dependencies, and boots the app** with a single double-click.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Architecture
 
 ```text
-local_market_sim/
-├── requirements.txt   # Third-party Python dependencies
-├── database.py       # SQLite engine (tracks balance, positions, & logs)
-├── market_data.py   # Real-time yfinance data streamer & Black-Scholes pricing
-├── server.py         # FastAPI backend server for localhost dashboard
-├── main.py          # Terminal CLI interface & interactive menu
-├── run.py           # Auto-launcher and dependency installer
+localMarketSimulator/
+├── requirements.txt      # Dependency specifications
+├── database.py          # SQLite database persistence layer
+├── market_data.py      # Real-time yfinance feed & Black-Scholes engine
+├── server.py            # FastAPI backend server for web dashboard
+├── main.py             # Main CLI menu interface
+├── run.py              # Automated Python environment launcher & dependency manager
+├── launch_windows.bat  # Windows one-click auto-installer & launcher
+├── launch_mac.command  # macOS one-click auto-installer & launcher
 ├── templates/
-│   └── dashboard.html# Watermelon UI Web Dashboard HTML/JS
-└── README.md        # Documentation
+│   └── dashboard.html   # Watermelon UI HTML/JS Web Dashboard
+└── README.md           # User guide documentation

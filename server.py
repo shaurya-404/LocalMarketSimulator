@@ -10,7 +10,10 @@ db = DatabaseManager()
 
 @app.get("/", response_class=HTMLResponse)
 async def get_dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    # Render template directly via Jinja2 environment to bypass version-specific Starlette API bugs
+    template = templates.get_template("dashboard.html")
+    content = template.render({"request": request})
+    return HTMLResponse(content=content)
 
 @app.get("/api/portfolio")
 async def get_portfolio():
