@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Project Local Database Files
+*.db
+*.sqlite3
+market_sim.db
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor & IDE Configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Downloads / Temporary files
+/tmp/
+*.log
